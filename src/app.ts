@@ -24,6 +24,10 @@ app.use(
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
+app.use("/", (req, res, next) => {
+  res.send("Welcome to restro master");
+});
+
 app.use("/api/users", userRouter);
 app.use("/api/restaurant", restaurantRouter);
 app.use("/api/floor", floorRouter);

@@ -17,6 +17,8 @@ export const getUser = async (
       : [];
   }
 
+  console.log(req.user);
+
   res.status(200).json({
     status: "success",
     message: "User data fetched",
@@ -38,10 +40,13 @@ export const updateUser = async (
   const userRepository = AppDataSource.getRepository(User);
   const user = await userRepository.findOneBy({ id: user_id });
 
+  // console.log(user);
+
   try {
     user.name = name;
     user.phone_no = phone_no;
     user.picture = picture;
+    await userRepository.update(user_id, user);
 
     res.status(200).json({
       status: "success",

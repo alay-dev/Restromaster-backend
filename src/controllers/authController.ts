@@ -123,6 +123,8 @@ export const protect = async (
       return next(new AppError("The user no longer exist", 401));
     currentUser.password = undefined;
 
+    console.log(currentUser, "currentzuser");
+
     //GRNT ACCESS TO PROTECTED ROUTE
     req.user = currentUser;
   } catch (err) {
