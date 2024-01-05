@@ -24,15 +24,11 @@ app.use(
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
-app.use("/", (req, res, next) => {
-  res.send("Welcome to restro master");
-});
-
 app.use("/api/users", userRouter);
 app.use("/api/restaurant", restaurantRouter);
 app.use("/api/floor", floorRouter);
 app.use("/api/dish", dishRouter);
-app.use("/api/util/", utilRouter);
+app.use("/api/util", utilRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on the server`, 404));
