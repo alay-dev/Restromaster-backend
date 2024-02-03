@@ -28,6 +28,9 @@ export class Restaurant {
   description: string;
 
   @Column({ nullable: true, default: "" })
+  cta: string;
+
+  @Column({ nullable: true, default: "" })
   phone_no: string;
 
   @Column({ nullable: true, default: "" })

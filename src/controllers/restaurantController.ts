@@ -14,6 +14,7 @@ export const createRestaurant = async (
     name,
     type,
     cover_pic,
+    cta,
     description,
     address,
     email,
@@ -42,6 +43,7 @@ export const createRestaurant = async (
     restaurant.address = address;
     restaurant.phone_no = phone_no;
     restaurant.email = email;
+    restaurant.cta = cta;
     restaurant.user = user;
     const { id } = await restaurantRepository.save(restaurant);
 
@@ -63,7 +65,17 @@ export const updateRestaurant = async (
   res: Response,
   next: NextFunction
 ) => {
-  let { restaurant_id, name, type, cover_pic, description } = req.body;
+  let {
+    restaurant_id,
+    name,
+    type,
+    cover_pic,
+    description,
+    cta,
+    address,
+    phone_no,
+    email,
+  } = req.body;
 
   if (!restaurant_id || !name || !type)
     return next(new AppError("Incomplete information", 400));
@@ -76,14 +88,17 @@ export const updateRestaurant = async (
     return next(new AppError("No restaurant exists with that ID", 404));
 
   try {
-    restaurant.name = name;
-    restaurant.type = type;
-    restaurant.description = description;
-    restaurant.cover_pic = cover_pic;
+    restaurant.name = name || restaurant.name;
+    restaurant.description = description || restaurant.description;
+    restaurant.cover_pic = cover_pic || restaurant.cover_pic;
+    restaurant.address = address || restaurant.address;
+    restaurant.phone_no = phone_no || restaurant.phone_no;
+    restaurant.email = email || restaurant.email;
+    restaurant.cta = cta || restaurant.cta;
 
     await restaurantRepository.update(restaurant_id, restaurant);
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       data: {
         restaurant_id: restaurant_id,

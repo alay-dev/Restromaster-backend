@@ -59,3 +59,30 @@ export const updateUser = async (
     console.log(err);
   }
 };
+
+export const updateProfilePic = async (
+  req: UserRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { profile_pic } = req.body;
+  const user_id = req.user.id;
+
+  const userRepository = AppDataSource.getRepository(User);
+  const user = await userRepository.findOneBy({ id: user_id });
+
+  try {
+    user.picture = profile_pic;
+    await userRepository.update(user_id, user);
+
+    res.status(200).json({
+      status: "success",
+      message: "User profile pic updated",
+      data: {
+        ...req.user,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
