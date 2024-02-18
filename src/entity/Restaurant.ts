@@ -9,6 +9,7 @@ import {
 import { User } from "./User";
 import { Dish } from "./Dish";
 import { Floor } from "./Floor";
+import { BookedTable } from "./bookedTable";
 
 @Entity()
 export class Restaurant {
@@ -51,4 +52,7 @@ export class Restaurant {
 
   @OneToMany(() => Floor, (floor) => floor.restaurant)
   floors: Floor[];
+
+  @OneToMany(() => BookedTable, (booking) => booking.restaurant)
+  bookings: BookedTable[];
 }

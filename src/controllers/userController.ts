@@ -17,7 +17,7 @@ export const getUser = async (
       : [];
   }
 
-  console.log(req.user);
+  console.log(restaurant, "RESTAURANT");
 
   res.status(200).json({
     status: "success",

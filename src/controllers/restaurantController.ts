@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { User } from "../entity/User";
 import { AppDataSource } from "../data-source";
 import { Restaurant } from "../entity/Restaurant";
+import { BookedTable } from "../entity/bookedTable";
 const AppError = require("../utils/appError");
 
 export const createRestaurant = async (
@@ -144,5 +145,109 @@ export const addDishCategory = async (
   } catch (err) {
     console.log(err);
     return next(new AppError("Error while creating restaurant", 400));
+  }
+};
+
+export const bookTable = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { restaurant_id, customer_name, phone_no, table_id, date, time, note } =
+    req.body;
+
+  if (!restaurant_id || !customer_name || !phone_no || !table_id || !time)
+    return next(new AppError("Incomplete information", 400));
+
+  const bookedTableRepository = AppDataSource.getRepository(BookedTable);
+  const restaurantRepository = AppDataSource.getRepository(Restaurant);
+  const restaurant = await restaurantRepository.findOneBy({
+    id: restaurant_id,
+  });
+  if (!restaurant)
+    return next(new AppError("No restaurant exists with that ID", 404));
+
+  try {
+    const bookedTable = new BookedTable();
+
+    bookedTable.customer_name = customer_name;
+    bookedTable.phone_no = phone_no;
+    bookedTable.date = date;
+    bookedTable.time = time;
+    bookedTable.table_id = table_id;
+    bookedTable.note = note;
+    bookedTable.restaurant = restaurant;
+
+    await bookedTableRepository.save(bookedTable);
+
+    res.status(201).json({
+      status: "success",
+      message: "Book table success",
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new AppError("Error while booking table", 400));
+  }
+};
+
+export const getBookings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { restaurant_id } = req.params;
+
+  if (!restaurant_id) return next(new AppError("Incomplete information", 400));
+
+  const bookedTableRepository = AppDataSource.getRepository(BookedTable);
+  const restaurantRepository = AppDataSource.getRepository(Restaurant);
+  const restaurant = await restaurantRepository.findOneBy({
+    id: restaurant_id,
+  });
+  if (!restaurant)
+    return next(new AppError("No restaurant exists with that ID", 404));
+
+  try {
+    const bookings = await bookedTableRepository.findBy({
+      restaurant: restaurant,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "All bookings fetched",
+      data: bookings,
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new AppError("Error while fetching bookings", 400));
+  }
+};
+
+export const getRestaurant = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { restaurant_id } = req.params;
+
+  if (!restaurant_id) return next(new AppError("Incomplete information", 400));
+
+  const restaurantRepository = AppDataSource.getRepository(Restaurant);
+  const restaurant = await restaurantRepository.findOneBy({
+    id: restaurant_id,
+  });
+
+  if (!restaurant)
+    return next(new AppError("No restaurant exists with that ID", 404));
+
+  try {
+    res.status(200).json({
+      status: "success",
+      message: "Restaurant fetched",
+      data: restaurant,
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new AppError("Error while fetching restaurant", 400));
   }
 };
