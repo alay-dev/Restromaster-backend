@@ -5,6 +5,34 @@ import { Restaurant } from "../entity/Restaurant";
 import { BookedTable } from "../entity/bookedTable";
 const AppError = require("../utils/appError");
 
+const bookingTimes = [
+  "9:30 AM",
+  "10:00 AM",
+  "10:30 AM",
+  "11:00 AM",
+  "11:30 AM",
+  "12:00 AM",
+  "12:30 PM",
+  "1:00 PM",
+  "1:30 PM",
+  "2:00 PM",
+  "2:30 PM",
+  "3:00 PM",
+  "3:30 PM",
+  "4:00 PM",
+  "4:30 PM",
+  "5:00 PM",
+  "5:30 PM",
+  "6:00 PM",
+  "6:30 PM",
+  "7:00 PM",
+  "7:30 PM",
+  "8:00 PM",
+  "8:30 PM",
+  "9:00 PM",
+  "9:30 PM",
+];
+
 export const createRestaurant = async (
   req: Request,
   res: Response,
@@ -249,5 +277,50 @@ export const getRestaurant = async (
   } catch (err) {
     console.log(err);
     return next(new AppError("Error while fetching restaurant", 400));
+  }
+};
+
+export const getTableAvailable = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { restaurant_id, date, table_id } = req.body;
+
+  if (!restaurant_id) return next(new AppError("Incomplete information", 400));
+
+  const restaurantRepository = AppDataSource.getRepository(Restaurant);
+  const bookedTableRepository = AppDataSource.getRepository(BookedTable);
+  const restaurant = await restaurantRepository.findOneBy({
+    id: restaurant_id,
+  });
+
+  if (!restaurant)
+    return next(new AppError("No restaurant exists with that ID", 404));
+
+  const bookings = await bookedTableRepository.findBy({
+    date: new Date(date),
+    restaurant: restaurant,
+    table_id: table_id?.toString(),
+  });
+
+  const availabilty = bookingTimes?.map((time) => {
+    return {
+      time: time,
+      is_available: bookings?.findIndex((item) => item.time === time)
+        ? true
+        : false,
+    };
+  });
+
+  try {
+    res.status(200).json({
+      status: "success",
+      message: "Table availability fetched",
+      data: availabilty,
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new AppError("Error while fetching table availability", 400));
   }
 };

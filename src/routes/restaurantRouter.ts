@@ -4,6 +4,7 @@ import {
   createRestaurant,
   getBookings,
   getRestaurant,
+  getTableAvailable,
   updateRestaurant,
 } from "../controllers/restaurantController";
 import { protect } from "../controllers/authController";
@@ -15,6 +16,7 @@ router.put("/update_restaurant", protect, updateRestaurant);
 router.post("/book_table", bookTable);
 router.get("/get_table_booking/:restaurant_id", protect, getBookings);
 router.get("/:restaurant_id", getRestaurant);
+router.post("/get_table_availabilty", getTableAvailable);
 
 module.exports = router;
 

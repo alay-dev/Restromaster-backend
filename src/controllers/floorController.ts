@@ -156,7 +156,7 @@ export const deleteFloor = async (
   res: Response,
   next: NextFunction
 ) => {
-  let { floor_id } = req.body;
+  let { floor_id } = req.params;
 
   if (!floor_id) return next(new AppError("Incomplete information", 400));
 
@@ -168,7 +168,7 @@ export const deleteFloor = async (
   try {
     await floorRepository.delete(floor_id);
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       data: {
         floor_id: floor_id,
