@@ -21,7 +21,7 @@ export const getAllDish = async (
   });
 
   if (!restaurant)
-    return next(new AppError("No restaurant exists with that ID", 404));
+    return next(new AppError("No restaurant exists with that ID", 400));
 
   try {
     let dishes = await dishRepository.findBy({

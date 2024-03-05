@@ -17,8 +17,6 @@ export const getUser = async (
       : [];
   }
 
-  console.log(restaurant, "RESTAURANT");
-
   res.status(200).json({
     status: "success",
     message: "User data fetched",

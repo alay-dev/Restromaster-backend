@@ -6,6 +6,7 @@ const userRouter = require("./routes/userRouter");
 const restaurantRouter = require("./routes/restaurantRouter");
 const floorRouter = require("./routes/floorRouter");
 const dishRouter = require("./routes/dishRouter");
+const orderRouter = require("./routes/orderRouter");
 const utilRouter = require("./routes/utilRouter");
 const globalErrorHandler = require("./controllers/errorController");
 const AppError = require("./utils/appError");
@@ -28,6 +29,7 @@ app.use("/api/users", userRouter);
 app.use("/api/restaurant", restaurantRouter);
 app.use("/api/floor", floorRouter);
 app.use("/api/dish", dishRouter);
+app.use("/api/order", orderRouter);
 app.use("/api/util", utilRouter);
 
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
