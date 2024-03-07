@@ -11,6 +11,7 @@ import { Dish } from "./Dish";
 import { Floor } from "./Floor";
 import { BookedTable } from "./bookedTable";
 import { Order } from "./Order";
+import { Employee } from "./Employee";
 
 @Entity()
 export class Restaurant {
@@ -59,4 +60,7 @@ export class Restaurant {
 
   @OneToMany(() => Order, (order) => order.restaurant)
   orders: Order[];
+
+  @OneToMany(() => Employee, (employee) => employee.restaurant)
+  employee: Employee[];
 }
