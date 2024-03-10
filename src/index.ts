@@ -10,7 +10,7 @@ const app = require("./app");
 
 const options = {
   key: fs.readFileSync("server.key"),
-  cert: fs.readFileSync("server.cert"),
+  cert: fs.readFileSync("server.crt"),
 };
 
 AppDataSource.initialize()
