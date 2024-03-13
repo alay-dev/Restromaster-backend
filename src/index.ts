@@ -8,15 +8,10 @@ dotenv.config();
 
 const app = require("./app");
 
-const options = {
-  key: fs.readFileSync("server.key"),
-  cert: fs.readFileSync("server.crt"),
-};
-
 AppDataSource.initialize()
   .then(async () => {
     const port = process.env.PORT || 3000;
-    const server = https.createServer(options, app);
+    const server = app.listen(port || 3000);
 
     server.listen(port, () => {
       console.log("Listening on port: ", port);
