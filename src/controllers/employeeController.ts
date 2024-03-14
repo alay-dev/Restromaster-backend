@@ -26,8 +26,7 @@ export const createEmployee = async (
     !last_name ||
     !email ||
     !designation ||
-    !date_of_birth ||
-    !photo
+    !date_of_birth
   )
     return next(new AppError("Incomplete information", 400));
 
