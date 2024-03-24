@@ -4,7 +4,7 @@ import {
   login,
   protect,
   loginWithGoogle,
-  forgotPassword,
+  // forgotPassword,
 } from "./../controllers/authController";
 import {
   getUser,
@@ -17,7 +17,7 @@ const router = express.Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/login_with_google", loginWithGoogle);
-router.get("/forgot_password/:email", forgotPassword);
+// router.get("/forgot_password/:email", forgotPassword);
 router.get("/me", protect, getUser);
 router.post("/update_user", protect, updateUser);
 router.post("/update_profile_pic", protect, updateProfilePic);

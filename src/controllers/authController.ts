@@ -8,9 +8,9 @@ const AppError = require("../utils/appError");
 import { promisify } from "util";
 import { UserRequest } from "../types/global";
 const { OAuth2Client } = require("google-auth-library");
-const sgMail = require("@sendgrid/mail");
+// const sgMail = require("@sendgrid/mail");
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signToken = (id: string) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -165,40 +165,40 @@ export const protect = async (
   next();
 };
 
-export const forgotPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { email } = req.params;
+// export const forgotPassword = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   const { email } = req.params;
 
-  if (!email)
-    return next(new AppError("Please provide email and password", 400));
+//   if (!email)
+//     return next(new AppError("Please provide email and password", 400));
 
-  const request = {
-    url: `/v3/api_keys`,
-    method: "GET",
-  };
+//   const request = {
+//     url: `/v3/api_keys`,
+//     method: "GET",
+//   };
 
-  // const user = await userRepository.findOneBy({ email: email });
-  // if (!user) return next(new AppError("No user found with that email", 404));
+//   // const user = await userRepository.findOneBy({ email: email });
+//   // if (!user) return next(new AppError("No user found with that email", 404));
 
-  console.log(sgMail, email);
+//   console.log(sgMail, email);
 
-  const msg = {
-    to: email, // Change to your recipient
-    from: "narualay030@gmail.com", // Change to your verified sender
-    subject: "Sending with SendGrid is Fun",
+//   const msg = {
+//     to: email, // Change to your recipient
+//     from: "narualay030@gmail.com", // Change to your verified sender
+//     subject: "Sending with SendGrid is Fun",
 
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-  };
+//     html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+//   };
 
-  sgMail
-    .send(msg)
-    .then(() => {
-      console.log("Email sent");
-    })
-    .catch((error) => {
-      console.error(error.response.body);
-    });
-};
+//   sgMail
+//     .send(msg)
+//     .then(() => {
+//       console.log("Email sent");
+//     })
+//     .catch((error) => {
+//       console.error(error.response.body);
+//     });
+// };
