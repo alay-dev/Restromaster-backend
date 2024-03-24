@@ -7,6 +7,10 @@ const bcrypt = require("bcryptjs");
 const AppError = require("../utils/appError");
 import { promisify } from "util";
 import { UserRequest } from "../types/global";
+const { OAuth2Client } = require("google-auth-library");
+const sgMail = require("@sendgrid/mail");
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const signToken = (id: string) => {
   return jwt.sign({ id: id }, process.env.JWT_SECRET, {
@@ -80,7 +84,7 @@ export const login = async (
     return next(new AppError("Please provide email and password", 400));
 
   const user = await userRepository.findOneBy({ email: email });
-  if (!user) return next(new AppError("No user found with that email", 404));
+  if (!user) return next(new AppError("Not found", 404));
 
   const correctPassword = await checkCorrectPassword(password, user.password);
   if (!correctPassword)
@@ -89,6 +93,35 @@ export const login = async (
     );
 
   createSendToken(user, 200, res);
+};
+
+export const loginWithGoogle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { token } = req.body;
+
+  if (!token) return next(new AppError("Google token is missing", 400));
+
+  try {
+    const client = new OAuth2Client();
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    const user = await userRepository.findOneBy({ email: payload.email });
+
+    if (!user) {
+      return next(new AppError("Not found", 404));
+    } else {
+      createSendToken(user, 200, res);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const protect = async (
@@ -130,4 +163,42 @@ export const protect = async (
   }
 
   next();
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email } = req.params;
+
+  if (!email)
+    return next(new AppError("Please provide email and password", 400));
+
+  const request = {
+    url: `/v3/api_keys`,
+    method: "GET",
+  };
+
+  // const user = await userRepository.findOneBy({ email: email });
+  // if (!user) return next(new AppError("No user found with that email", 404));
+
+  console.log(sgMail, email);
+
+  const msg = {
+    to: email, // Change to your recipient
+    from: "narualay030@gmail.com", // Change to your verified sender
+    subject: "Sending with SendGrid is Fun",
+
+    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+  };
+
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error.response.body);
+    });
 };

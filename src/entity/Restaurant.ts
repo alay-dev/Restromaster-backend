@@ -45,7 +45,9 @@ export class Restaurant {
   @Column({ nullable: true })
   dish_category: string;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn()
   user: User;
 
@@ -55,12 +57,18 @@ export class Restaurant {
   @OneToMany(() => Floor, (floor) => floor.restaurant)
   floors: Floor[];
 
-  @OneToMany(() => BookedTable, (booking) => booking.restaurant)
+  @OneToMany(() => BookedTable, (booking) => booking.restaurant, {
+    onDelete: "CASCADE",
+  })
   bookings: BookedTable[];
 
-  @OneToMany(() => Order, (order) => order.restaurant)
+  @OneToMany(() => Order, (order) => order.restaurant, {
+    onDelete: "CASCADE",
+  })
   orders: Order[];
 
-  @OneToMany(() => Employee, (employee) => employee.restaurant)
+  @OneToMany(() => Employee, (employee) => employee.restaurant, {
+    onDelete: "CASCADE",
+  })
   employee: Employee[];
 }

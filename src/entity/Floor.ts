@@ -19,6 +19,8 @@ export class Floor {
   @Column()
   canvas: string;
 
-  @ManyToOne(() => Restaurant, (restaurant) => restaurant.floors)
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.floors, {
+    onDelete: "CASCADE",
+  })
   restaurant: Restaurant;
 }
