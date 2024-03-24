@@ -6,6 +6,7 @@ import {
   getRestaurant,
   getTableAvailable,
   updateRestaurant,
+  updateRestaurantImage,
 } from "../controllers/restaurantController";
 import { protect } from "../controllers/authController";
 
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.post("/create_restaurant", protect, createRestaurant);
 router.put("/update_restaurant", protect, updateRestaurant);
+router.put("/update_restaurant_image", protect, updateRestaurantImage);
 router.post("/book_table", bookTable);
 router.get("/get_table_booking/:restaurant_id", protect, getBookings);
 router.get("/:restaurant_id", getRestaurant);

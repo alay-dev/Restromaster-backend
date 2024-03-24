@@ -89,6 +89,41 @@ export const createRestaurant = async (
   }
 };
 
+export const updateRestaurantImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let { cover_pic, restaurant_id } = req.body;
+
+  if (!restaurant_id || !cover_pic)
+    return next(new AppError("Incomplete information", 400));
+
+  const restaurantRepository = AppDataSource.getRepository(Restaurant);
+  const restaurant = await restaurantRepository.findOneBy({
+    id: restaurant_id,
+  });
+  if (!restaurant)
+    return next(new AppError("No restaurant exists with that ID", 404));
+
+  try {
+    restaurant.cover_pic = cover_pic || restaurant.cover_pic;
+
+    await restaurantRepository.update(restaurant_id, restaurant);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        restaurant_id: restaurant_id,
+      },
+      message: "Restaurant updated",
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new AppError("Error while creating restaurant", 400));
+  }
+};
+
 export const updateRestaurant = async (
   req: Request,
   res: Response,
